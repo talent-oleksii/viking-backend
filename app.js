@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { createClient } = require("@supabase/supabase-js");
-import Replicate from "replicate";
+const Replicate = require("replicate");
 
 const app = express();
 const port = 3000;
@@ -29,10 +29,12 @@ app.post("/webhook", async (req, res) => {
   const status = databody.data.attributes.status;
   const email = databody.data.attributes.user_email;
   const amount = databody.data.attributes.subtotal;
-
   console.log("Status: ", status);
   console.log("Email: ", email);
   console.log("Amount: ", amount);
+
+  const emailPrefix = email.split("@")[0];
+  console.log("Email prefix: ", emailPrefix);
 
   if (status === "paid") {
     console.log("Status is paid");
