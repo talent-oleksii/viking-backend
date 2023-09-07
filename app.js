@@ -2,9 +2,14 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { createClient } = require("@supabase/supabase-js");
+import Replicate from "replicate";
 
 const app = express();
 const port = 3000;
+
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_TOKEN,
+});
 
 // Initialize Supabase client
 const supabaseUrl = "https://tghnhiheiaeenfaurxtp.supabase.co";
@@ -45,6 +50,12 @@ app.post("/webhook", async (req, res) => {
     const rowData = data[0];
     console.log("Row data: ", rowData);
 
+    const mom = rowData.mom;
+    const dad = rowData.dad;
+
+    console.log("Mom: ", mom);
+    console.log("Dad: ", dad);
+
     // Update the 'is_active' column
     const { data1, error1 } = await supabase
       .from("users")
@@ -54,17 +65,23 @@ app.post("/webhook", async (req, res) => {
     console.log("Data1: ", data1);
     console.log("Error1: ", error1);
 
-    // // Make an external API call with the row data
-    // const externalApiUrl = "https://some-external-api.com/endpoint";
-    // try {
-    //   const apiResponse = await axios.post(externalApiUrl, rowData);
-    //   console.log("Successfully sent data to external API:", apiResponse.data);
-    //   res.status(200).send("OK");
-    // } catch (apiError) {
-    //   console.error("Error sending data to external API:", apiError);
-    //   res.status(500).send("Internal Server Error");
-    // }
-    res.status(200).send("OK");
+    // Make API call
+    try {
+      const response = await replicate.run(
+        "catacolabs/baby-pics:2c228c4d2266c2a03fee359e7d1dd7cb20838e9d68500d18749e4213f6c6b97d",
+        {
+          input: {
+            image: mom,
+            image2: dad,
+          },
+        }
+      );
+      console.log("Response: ", response);
+      res.status(200).send("API triggered");
+    } catch (apiError) {
+      console.error("Error sending data to external API:", apiError);
+      res.status(500).send("Internal Server Error");
+    }
   } else {
     // Handle other cases
     res.status(200).send("NOT OK");
