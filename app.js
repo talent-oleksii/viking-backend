@@ -10,7 +10,9 @@ import axios from 'axios';
 import { createClient } from '@supabase/supabase-js';
 import Replicate from 'replicate';
 import { Headers } from 'node-fetch';
+import fetch from 'node-fetch';
 
+global.fetch = fetch;
 global.Headers = Headers;
 
 const app = express();
