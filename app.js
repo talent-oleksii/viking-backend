@@ -4,13 +4,13 @@
 // const { createClient } = require("@supabase/supabase-js");
 // const Replicate = require("replicate");
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import axios from 'axios';
-import { createClient } from '@supabase/supabase-js';
-import Replicate from 'replicate';
-import { Headers } from 'node-fetch';
-import fetch from 'node-fetch';
+import express from "express";
+import bodyParser from "body-parser";
+import axios from "axios";
+import { createClient } from "@supabase/supabase-js";
+import Replicate from "replicate";
+import { Headers } from "node-fetch";
+import fetch from "node-fetch";
 
 global.fetch = fetch;
 global.Headers = Headers;
@@ -78,22 +78,39 @@ app.post("/webhook", async (req, res) => {
     console.log("Data1: ", data1);
     console.log("Error1: ", error1);
 
-    // Make API call
-    try {
+    // Determine loop count
+    let loopCount = 0;
+    if (amount === 900) {
+      loopCount = 1;
+    } else {
+      loopCount = 5;
+    }
+
+    res.status(200).send("API triggered");
+
+    // Make API call (boy)
+    for (let i = 1; i <= loopCount; i++) {
       const response = await replicate.run(
         "catacolabs/baby-pics:2c228c4d2266c2a03fee359e7d1dd7cb20838e9d68500d18749e4213f6c6b97d",
         {
           input: {
             image: mom,
             image2: dad,
+            gender: "boy",
+            seed: 1000 + i * 10,
           },
         }
       );
+
       console.log("Response: ", response);
-      res.status(200).send("API triggered");
-    } catch (apiError) {
-      console.error("Error sending data to external API:", apiError);
-      res.status(500).send("Internal Server Error");
+
+      const { data, error } = await supabase
+        .from("users")
+        .update({ [`image${i}`]: response })
+        .eq("email", email);
+
+      console.log("Data: ", data);
+      console.log("Error: ", error);
     }
   } else {
     // Handle other cases
