@@ -91,7 +91,7 @@ app.post("/webhook", async (req, res) => {
     // Make API call (boy)
     for (let i = 1; i <= loopCount; i++) {
       const randomFactor = Math.floor(Math.random() * 100) + 1; // A random number between 1 and 100
-      const newSeed = 1000 + i * 10 + randomFactor; // Original seed + random factor
+      const newSeed = 20000 + i * 10 + randomFactor; // Original seed + random factor
 
       const response = await replicate.run(
         "catacolabs/baby-pics:2c228c4d2266c2a03fee359e7d1dd7cb20838e9d68500d18749e4213f6c6b97d",
@@ -119,7 +119,7 @@ app.post("/webhook", async (req, res) => {
     // Make API call (girl)
     for (let i = 1; i <= loopCount; i++) {
       const randomFactor = Math.floor(Math.random() * 100) + 1; // A random number between 1 and 100
-      const newSeed = 1000 + i * 10 + randomFactor; // Original seed + random factor
+      const newSeed = 20000 + i * 10 + randomFactor; // Original seed + random factor
 
       const response = await replicate.run(
         "catacolabs/baby-pics:2c228c4d2266c2a03fee359e7d1dd7cb20838e9d68500d18749e4213f6c6b97d",
