@@ -1,8 +1,14 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const axios = require("axios");
-const { createClient } = require("@supabase/supabase-js");
-const Replicate = require("replicate");
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const axios = require("axios");
+// const { createClient } = require("@supabase/supabase-js");
+// const Replicate = require("replicate");
+
+import express from 'express';
+import bodyParser from 'body-parser';
+import axios from 'axios';
+import { createClient } from '@supabase/supabase-js';
+import Replicate from 'replicate';
 
 const app = express();
 const port = 3000;
