@@ -9,6 +9,9 @@ import bodyParser from 'body-parser';
 import axios from 'axios';
 import { createClient } from '@supabase/supabase-js';
 import Replicate from 'replicate';
+import { Headers } from 'node-fetch';
+
+global.Headers = Headers;
 
 const app = express();
 const port = 3000;
