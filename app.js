@@ -8,7 +8,7 @@ const app = express();
 const port = 3000;
 
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
+  auth: "r8_OPHwav6jQi5yL9HrVSGwEnm13aL8rgG0k46eE",
 });
 
 // Initialize Supabase client
