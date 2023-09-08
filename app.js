@@ -143,11 +143,30 @@ app.post("/webhook", async (req, res) => {
       console.log("Data: ", data);
       console.log("Error: ", error);
     }
-
   } else {
     // Handle other cases
     res.status(200).send("NOT OK");
   }
+});
+
+app.post("/trigger-training", async (req, res) => {
+  const { email } = req.body;
+  console.log("Email: ", email);
+
+  const training = await replicate.trainings.create(
+    "stability-ai",
+    "sdxl",
+    "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+    {
+      destination: "stockbet/sdxl-viking",
+      input: {
+        input_images:
+          `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
+      },
+      //   webhook: "https://example.com/replicate-webhook",
+    }
+  );
+  console.log(`URL: https://replicate.com/p/${training.id}`);
 });
 
 app.listen(port, () => {
