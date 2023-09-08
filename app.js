@@ -11,6 +11,7 @@ import { createClient } from "@supabase/supabase-js";
 import Replicate from "replicate";
 import { Headers } from "node-fetch";
 import fetch from "node-fetch";
+import cors from "cors"; // Import the 'cors' middleware
 
 global.fetch = fetch;
 global.Headers = Headers;
@@ -31,6 +32,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Middleware for parsing JSON and urlencoded form data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Enable CORS for all routes using the 'cors' middleware
+app.use(cors());
 
 // Your webhook endpoint
 app.post("/webhook", async (req, res) => {
