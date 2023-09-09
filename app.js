@@ -183,7 +183,7 @@ app.post("/replicate", async (req, res) => {
 
   // Determine loop count
   let loopCount = 0;
-  if (order_type === 8) {
+  if (order_type === "8") {
     loopCount = 2;
   } else {
     loopCount = 20;
