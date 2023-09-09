@@ -34,13 +34,17 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Middleware for parsing JSON and urlencoded form data
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// Set max request size to 200MB
+app.use(bodyParser.json({ limit: '200mb' }));
+app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 
 // Enable CORS for all routes using the 'cors' middleware
 app.use(cors());
 
-// Payment webhook endpoint
+
+
+// Old Lemon
 app.post("/webhook", async (req, res) => {
   console.log("Received webhook:", req.body);
 
@@ -157,12 +161,19 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-// Training webhook endpoint
-app.post("/webhook2", async (req, res) => {
+
+
+// Replicate webhook
+app.post("/replicate", async (req, res) => {
   console.log("Received webhook:", req.body);
+  console.log("Training_ID: ", req.body.id);
+  console.log("Model_ID: ", req.body.output.version);
   res.status(200).send("API triggered");
 });
 
+
+
+// Temp
 app.post("/trigger-training", async (req, res) => {
   const { email } = req.body;
   console.log("Email: ", email);
@@ -177,7 +188,7 @@ app.post("/trigger-training", async (req, res) => {
         input: {
           input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
         },
-          webhook: "https://viking-zh8k.onrender.com/webhook2",
+          webhook: "https://viking-zh8k.onrender.com/replicate",
       }
     );
     console.log(`URL: https://replicate.com/p/${training.id}`);
@@ -189,6 +200,51 @@ app.post("/trigger-training", async (req, res) => {
   }
 });
 
+
+
+// Stripe webhook
+app.post("/stripe", async (req, res) => {
+  const { email } = req.body;
+  console.log("Email: ", email);
+
+  const emailPrefix = email.split("@")[0];
+  console.log("Email prefix: ", emailPrefix);
+
+  try {
+    const training = await replicate.trainings.create(
+      "stability-ai",
+      "sdxl",
+      "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+      {
+        destination: "stockbet/sdxl-viking",
+        input: {
+          input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
+        },
+        webhook: "https://viking-zh8k.onrender.com/replicate",
+      }
+    );
+    console.log(`URL: https://replicate.com/p/${training.id}`);
+    console.log(training);
+    res.json({ success: true, trainingId: training.id }); // Added this line
+  } catch (error) {
+    console.error("Error in training: ", error);
+    res.status(500).json({ success: false, error: error.message }); // Added this line
+  }
+
+  // Update the 'training_id' column
+  const { data, error } = await supabase
+    .from("users")
+    .upsert({ training_id: training.id })
+    .eq("email", email);
+
+  console.log("Data: ", data);
+  console.log("Error: ", error);
+
+});
+
+
+
+// Final
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
