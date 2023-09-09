@@ -196,6 +196,7 @@ app.post("/replicate", async (req, res) => {
   // Prompts
   let new_prompt = [
     "fighting in battle",
+    "fighting in battle",
     "dancing in the rain",
     "navigating the seas",
     "baking a cake",
