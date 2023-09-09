@@ -26,9 +26,9 @@ const replicate = new Replicate({
 });
 
 // Initialize Supabase client
-const supabaseUrl = "https://tghnhiheiaeenfaurxtp.supabase.co";
+const supabaseUrl = "https://remwbrfkzindyqlksvyv.supabase.co";
 const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnaG5oaWhlaWFlZW5mYXVyeHRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM4MTg2NjIsImV4cCI6MjAwOTM5NDY2Mn0.PybFXf64fYa0aoZuUCe1DNZclu2Z9U44n5Ktv-nKB5g";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlbXdicmZremluZHlxbGtzdnl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQxMzk3NzAsImV4cCI6MjAwOTcxNTc3MH0.5ERbhDU3OAtrLPThLoiAudTzmnIZ3rR1NRPT2M7hkr4";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware for parsing JSON and urlencoded form data
@@ -159,11 +159,6 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-
-
-
-
-
 // Replicate webhook
 app.post("/replicate", async (req, res) => {
   console.log("Received webhook:", req.body);
@@ -199,14 +194,11 @@ app.post("/replicate", async (req, res) => {
 
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
-    const response = await replicate.run(
-      model_id,
-      {
-        input: {
-          prompt: `a photo of TOK wearing Viking armor`,
-        },
-      }
-    );
+    const response = await replicate.run(model_id, {
+      input: {
+        prompt: `a photo of TOK wearing Viking armor`,
+      },
+    });
 
     console.log("Response: ", response);
 
@@ -225,26 +217,43 @@ app.post("/trigger-training", async (req, res) => {
   const { email } = req.body;
   console.log("Email: ", email);
 
-  try {
-    const training = await replicate.trainings.create(
-      "stability-ai",
-      "sdxl",
-      "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
-      {
-        destination: "stockbet/sdxl-viking",
-        input: {
-          input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
-        },
-        webhook: "https://viking-zh8k.onrender.com/replicate",
-      }
-    );
-    console.log(`URL: https://replicate.com/p/${training.id}`);
-    console.log(training);
-    res.json({ success: true, trainingId: training.id }); // Added this line
-  } catch (error) {
-    console.error("Error in training: ", error);
-    res.status(500).json({ success: false, error: error.message }); // Added this line
-  }
+  // try {
+  //   const training = await replicate.trainings.create(
+  //     "stability-ai",
+  //     "sdxl",
+  //     "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+  //     {
+  //       destination: "stockbet/sdxl-viking",
+  //       input: {
+  //         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
+  //       },
+  //       webhook: "https://viking-zh8k.onrender.com/replicate",
+  //     }
+  //   );
+  //   console.log(`URL: https://replicate.com/p/${training.id}`);
+  //   console.log(training);
+  //   res.json({ success: true, trainingId: training.id }); // Added this line
+  // } catch (error) {
+  //   console.error("Error in training: ", error);
+  //   res.status(500).json({ success: false, error: error.message }); // Added this line
+  // }
+
+  const training = await replicate.trainings.create(
+    "stability-ai",
+    "sdxl",
+    "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+    {
+      destination: "stockbet/sdxl-viking",
+      input: {
+        input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
+      },
+      webhook: "https://viking-zh8k.onrender.com/replicate",
+    }
+  );
+  
+  console.log(`URL: https://replicate.com/p/${training.id}`);
+  console.log(training);
+  res.json({ success: true, trainingId: training.id }); // Added this line
 
   // Update the 'training_id' column
   const { data, error } = await supabase
