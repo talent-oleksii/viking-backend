@@ -193,11 +193,35 @@ app.post("/replicate", async (req, res) => {
   // Send status
   res.status(200).send("API triggered");
 
+  // Prompts
+  let new_prompt = [
+    "fighting in battle",
+    "dancing in the rain",
+    "navigating the seas",
+    "baking a cake",
+    "on a date",
+    "playing the piano",
+    "at a party",
+    "at the beach",
+    "cooking dinner",
+    "flying a plane",
+    "riding a horse",
+    "going to the gym",
+    "in the kitchen",
+    "playing the guitar",
+    "hiking in the mountains",
+    "building a house",
+    "running a marathon",
+    "in the garden",
+    "having a picnic",
+    "playing tennis",
+  ];
+
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
     const response = await replicate.run(model_id, {
       input: {
-        prompt: `a photo of TOK wearing Viking armor`,
+        prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
       },
     });
 
@@ -251,7 +275,7 @@ app.post("/trigger-training", async (req, res) => {
       webhook: "https://viking-zh8k.onrender.com/replicate",
     }
   );
-  
+
   console.log(`URL: https://replicate.com/p/${training.id}`);
   console.log(training);
   res.json({ success: true, trainingId: training.id }); // Added this line
