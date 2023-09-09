@@ -188,6 +188,7 @@ app.post("/replicate", async (req, res) => {
   } else {
     loopCount = 20;
   }
+  console.log("Loop count: ", loopCount);
 
   // Send status
   res.status(200).send("API triggered");
@@ -258,7 +259,7 @@ app.post("/trigger-training", async (req, res) => {
   // Update the 'training_id' column
   const { data, error } = await supabase
     .from("users")
-    .upsert({ training_id: training.id })
+    .update({ training_id: training.id })
     .eq("partial", email);
 
   console.log("Data: ", data);
