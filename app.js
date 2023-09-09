@@ -12,7 +12,9 @@ import Replicate from "replicate";
 import { Headers } from "node-fetch";
 import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
+import * as dotenv from 'dotenv'
 
+dotenv.config()
 global.fetch = fetch;
 global.Headers = Headers;
 
