@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Enable CORS for all routes using the 'cors' middleware
 app.use(cors());
 
-// Your webhook endpoint
+// Payment webhook endpoint
 app.post("/webhook", async (req, res) => {
   console.log("Received webhook:", req.body);
 
@@ -155,6 +155,12 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
+// Training webhook endpoint
+app.post("/webhook2", async (req, res) => {
+  console.log("Received webhook:", req.body);
+  res.status(200).send("API triggered");
+});
+
 app.post("/trigger-training", async (req, res) => {
   const { email } = req.body;
   console.log("Email: ", email);
@@ -169,7 +175,7 @@ app.post("/trigger-training", async (req, res) => {
         input: {
           input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
         },
-        //   webhook: "https://example.com/replicate-webhook",
+          webhook: "https://viking-zh8k.onrender.com/webhook2",
       }
     );
     console.log(`URL: https://replicate.com/p/${training.id}`);
