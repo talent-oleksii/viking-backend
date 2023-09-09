@@ -228,14 +228,15 @@ app.post("/replicate", async (req, res) => {
 
     console.log("Response: ", response);
     console.log(response)
+    console.log(response[0])
 
-    const { data, error } = await supabase
-      .from("users")
-      .update({ [`result${i}`]: response })
-      .eq("training_id", training_id);
+    // const { data, error } = await supabase
+    //   .from("users")
+    //   .update({ [`result${i}`]: response })
+    //   .eq("training_id", training_id);
 
-    console.log("Data: ", data);
-    console.log("Error: ", error);
+    // console.log("Data: ", data);
+    // console.log("Error: ", error);
   }
 });
 
