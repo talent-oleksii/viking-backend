@@ -157,20 +157,25 @@ app.post("/trigger-training", async (req, res) => {
   const { email } = req.body;
   console.log("Email: ", email);
 
-  const training = await replicate.trainings.create(
-    "stability-ai",
-    "sdxl",
-    "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
-    {
-      destination: "stockbet/sdxl-viking",
-      input: {
-        input_images:
-          `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
-      },
-      //   webhook: "https://example.com/replicate-webhook",
-    }
-  );
-  console.log(`URL: https://replicate.com/p/${training.id}`);
+  try {
+    const training = await replicate.trainings.create(
+      "stability-ai",
+      "sdxl",
+      "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+      {
+        destination: "stockbet/sdxl-viking",
+        input: {
+          input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
+        },
+        //   webhook: "https://example.com/replicate-webhook",
+      }
+    );
+    console.log(`URL: https://replicate.com/p/${training.id}`);
+    res.json({ success: true, trainingId: training.id }); // Added this line
+  } catch (error) {
+    console.error("Error in training: ", error);
+    res.status(500).json({ success: false, error: error.message }); // Added this line
+  }
 });
 
 app.listen(port, () => {
