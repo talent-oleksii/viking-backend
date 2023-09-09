@@ -32,8 +32,10 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Middleware for parsing JSON and urlencoded form data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Enable CORS for all routes using the 'cors' middleware
 app.use(cors());
