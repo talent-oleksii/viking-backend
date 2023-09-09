@@ -173,6 +173,7 @@ app.post("/trigger-training", async (req, res) => {
       }
     );
     console.log(`URL: https://replicate.com/p/${training.id}`);
+    console.log(training)
     res.json({ success: true, trainingId: training.id }); // Added this line
   } catch (error) {
     console.error("Error in training: ", error);
