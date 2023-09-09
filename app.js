@@ -12,9 +12,9 @@ import Replicate from "replicate";
 import { Headers } from "node-fetch";
 import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
-import * as dotenv from 'dotenv'
+import * as dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 global.fetch = fetch;
 global.Headers = Headers;
 
@@ -36,13 +36,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set max request size to 200MB
-app.use(bodyParser.json({ limit: '200mb' }));
-app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
+app.use(bodyParser.json({ limit: "200mb" }));
+app.use(bodyParser.urlencoded({ limit: "200mb", extended: true }));
 
 // Enable CORS for all routes using the 'cors' middleware
 app.use(cors());
-
-
 
 // Old Lemon
 app.post("/webhook", async (req, res) => {
@@ -163,15 +161,64 @@ app.post("/webhook", async (req, res) => {
 
 
 
+
+
+
 // Replicate webhook
 app.post("/replicate", async (req, res) => {
   console.log("Received webhook:", req.body);
   console.log("Training_ID: ", req.body.id);
   console.log("Model_ID: ", req.body.output.version);
+
+  const training_id = req.body.id;
+  const model_id = req.body.output.version;
+
+  // Read entire row with the matching training_id
+  const { data, error } = await supabase
+    .from("users")
+    .select("order")
+    .eq("training_id", training_id);
+
+  console.log("Data: ", data);
+  console.log("Error: ", error);
+
+  const order_type = data[0].order;
+  console.log("Order type 1: ", order_type);
+  console.log("Order type 2: ", data[0].order);
+
+  // Determine loop count
+  let loopCount = 0;
+  if (order_type === 8) {
+    loopCount = 2;
+  } else {
+    loopCount = 20;
+  }
+
+  // Send status
   res.status(200).send("API triggered");
+
+  // Trigger replicate
+  for (let i = 1; i <= loopCount; i++) {
+    const response = await replicate.run(
+      model_id,
+      {
+        input: {
+          prompt: `a photo of TOK wearing Viking armor`,
+        },
+      }
+    );
+
+    console.log("Response: ", response);
+
+    // const { data, error } = await supabase
+    //   .from("users")
+    //   .update({ [`image${i}`]: response })
+    //   .eq("email", email);
+
+    // console.log("Data: ", data);
+    // console.log("Error: ", error);
+  }
 });
-
-
 
 // Temp
 app.post("/trigger-training", async (req, res) => {
@@ -188,19 +235,26 @@ app.post("/trigger-training", async (req, res) => {
         input: {
           input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
         },
-          webhook: "https://viking-zh8k.onrender.com/replicate",
+        webhook: "https://viking-zh8k.onrender.com/replicate",
       }
     );
     console.log(`URL: https://replicate.com/p/${training.id}`);
-    console.log(training)
+    console.log(training);
     res.json({ success: true, trainingId: training.id }); // Added this line
   } catch (error) {
     console.error("Error in training: ", error);
     res.status(500).json({ success: false, error: error.message }); // Added this line
   }
+
+  // Update the 'training_id' column
+  const { data, error } = await supabase
+    .from("users")
+    .upsert({ training_id: training.id })
+    .eq("partial", email);
+
+  console.log("Data: ", data);
+  console.log("Error: ", error);
 });
-
-
 
 // Stripe webhook
 app.post("/stripe", async (req, res) => {
@@ -239,10 +293,7 @@ app.post("/stripe", async (req, res) => {
 
   console.log("Data: ", data);
   console.log("Error: ", error);
-
 });
-
-
 
 // Final
 app.listen(port, () => {
