@@ -168,15 +168,29 @@ app.post("/replicate", async (req, res) => {
   const training_id = req.body.id;
   const model_id = req.body.output.version;
 
+  // // Read order row with the matching training_id
+  // const { data, error } = await supabase
+  //   .from("users")
+  //   .select("order")
+  //   .eq("training_id", training_id);
+
+  // console.log("Data: ", data);
+  // console.log("Error: ", error);
+
   // Read entire row with the matching training_id
   const { data, error } = await supabase
     .from("users")
-    .select("order")
+    .select("*")
     .eq("training_id", training_id);
 
   console.log("Data: ", data);
   console.log("Error: ", error);
 
+  // Declare partial email
+  const partial = data[0].partial;
+  console.log("Partial: ", partial);
+
+  // Declare order_type
   const order_type = data[0].order;
   console.log("Order type 1: ", order_type);
   console.log("Order type 2: ", data[0].order);
@@ -227,16 +241,33 @@ app.post("/replicate", async (req, res) => {
     });
 
     console.log("Response: ", response);
-    console.log(response)
-    console.log(response[0])
+    console.log(response);
+    console.log(response[0]);
 
-    const { data, error } = await supabase
-      .from("users")
-      .update({ [`result${i}`]: response[0] })
-      .eq("training_id", training_id);
+    // Download the image using fetch
+    const fetchResponse = await fetch(response[0]);
+    const buffer = await fetchResponse.buffer();
+
+    // Upload the image to Supabase Storage
+    const { data, error } = await supabase.storage
+    .from("results")
+    .upload(`${partial}${i}.png`, buffer, {
+      cacheControl: "3600",
+      upsert: true,
+    });
 
     console.log("Data: ", data);
     console.log("Error: ", error);
+    console.log("Done")
+
+    // // Insert link into table
+    // const { data, error } = await supabase
+    //   .from("users")
+    //   .update({ [`result${i}`]: response[0] })
+    //   .eq("training_id", training_id);
+
+    // console.log("Data: ", data);
+    // console.log("Error: ", error);
   }
 });
 
