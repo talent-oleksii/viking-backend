@@ -250,15 +250,15 @@ app.post("/replicate", async (req, res) => {
 
     // Upload the image to Supabase Storage
     const { data, error } = await supabase.storage
-    .from("results")
-    .upload(`${partial}${i}.png`, buffer, {
-      cacheControl: "3600",
-      upsert: true,
-    });
+      .from("results")
+      .upload(`${partial}${i}.png`, buffer, {
+        cacheControl: "3600",
+        upsert: true,
+      });
 
     console.log("Data: ", data);
     console.log("Error: ", error);
-    console.log("Done")
+    console.log("Done");
 
     // // Insert link into table
     // const { data, error } = await supabase
@@ -326,32 +326,38 @@ app.post("/trigger-training", async (req, res) => {
 
 // Stripe webhook
 app.post("/stripe", async (req, res) => {
-  const { email } = req.body;
-  console.log("Email: ", email);
+  // Check event type
+  console.log("Received webhook:", req.body);
+  console.log("Webhook type:", req.body.type);
 
+  // Extract customer ID from Stripe webhook data
+  const customerId = req.body.data.object.customer;
+  console.log("Customer ID: ", customerId);
+
+  // Retrieve customer details from Stripe
+  const customer = await stripe.customers.retrieve(customerId);
+  console.log("Customer: ", customer);
+  const email = customer.email;
+  console.log("Email: ", email);
   const emailPrefix = email.split("@")[0];
   console.log("Email prefix: ", emailPrefix);
 
-  try {
-    const training = await replicate.trainings.create(
-      "stability-ai",
-      "sdxl",
-      "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
-      {
-        destination: "stockbet/sdxl-viking",
-        input: {
-          input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-        },
-        webhook: "https://viking-zh8k.onrender.com/replicate",
-      }
-    );
-    console.log(`URL: https://replicate.com/p/${training.id}`);
-    console.log(training);
-    res.json({ success: true, trainingId: training.id }); // Added this line
-  } catch (error) {
-    console.error("Error in training: ", error);
-    res.status(500).json({ success: false, error: error.message }); // Added this line
-  }
+  res.json({ received: true });
+
+  const training = await replicate.trainings.create(
+    "stability-ai",
+    "sdxl",
+    "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
+    {
+      destination: "stockbet/sdxl-viking",
+      input: {
+        input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
+      },
+      webhook: "https://viking-zh8k.onrender.com/replicate",
+    }
+  );
+  console.log(`URL: https://replicate.com/p/${training.id}`);
+  console.log(training);
 
   // Update the 'training_id' column
   const { data, error } = await supabase
