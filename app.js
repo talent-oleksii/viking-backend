@@ -337,6 +337,10 @@ app.post("/stripe", async (req, res) => {
   const customerId = req.body.data.object.customer;
   console.log("Customer ID: ", customerId);
 
+  // email
+  const email1 = req.body.data.object.billing_details.email;
+  console.log("Email 1: ", email1);
+
   // Retrieve customer details from Stripe
   const customer = await stripe.customers.retrieve(customerId);
   console.log("Customer: ", customer);
