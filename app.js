@@ -363,7 +363,7 @@ app.post("/stripe", async (req, res) => {
   // Update the 'training_id' column
   const { data, error } = await supabase
     .from("users")
-    .upsert({ training_id: training.id })
+    .update({ training_id: training.id })
     .eq("email", email);
 
   console.log("Data: ", data);
