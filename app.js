@@ -13,6 +13,7 @@ import { Headers } from "node-fetch";
 import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
 import * as dotenv from "dotenv";
+import Stripe from 'stripe';
 
 dotenv.config();
 global.fetch = fetch;
@@ -20,6 +21,8 @@ global.Headers = Headers;
 
 const app = express();
 const port = 3000;
+
+const stripe = new Stripe('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');
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
