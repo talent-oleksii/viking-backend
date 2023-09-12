@@ -13,7 +13,7 @@ import { Headers } from "node-fetch";
 import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
 import * as dotenv from "dotenv";
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
 dotenv.config();
 global.fetch = fetch;
@@ -22,7 +22,9 @@ global.Headers = Headers;
 const app = express();
 const port = 3000;
 
-const stripe = new Stripe('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');
+const stripe = new Stripe(
+  "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"
+);
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
@@ -360,10 +362,13 @@ app.post("/stripe", async (req, res) => {
   console.log(`URL: https://replicate.com/p/${training.id}`);
   console.log(training);
 
-  // Update the 'training_id' column
+  // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
     .from("users")
-    .update({ training_id: training.id })
+    .update({
+      training_id: training.id,
+      paid: true,
+    })
     .eq("email", email);
 
   console.log("Data: ", data);
