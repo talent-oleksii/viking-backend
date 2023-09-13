@@ -383,8 +383,8 @@ app.post("/stripe", async (req, res) => {
       from: "AI Viking <team@aiviking.com>", // Replace with your actual details
       to: [email], // Assuming data[0].email contains the user's email address
       subject: "View Your Photos",
-      html: `<strong>Thanks for your payment!</strong><br>
-      <p>Your can view your photos at <a href="https://aiviking.com/${emailPrefix}">aiviking.com/${emailPrefix}</a></p>`,
+      html: `<strong>Thanks for placing an order!</strong><br><br>
+      <p>Your can view your photos at <a href="https://aiviking.com/${emailPrefix}">aiviking.com/${emailPrefix}</a>.</p>`,
     });
     console.log(emailData);
   } catch (emailError) {
