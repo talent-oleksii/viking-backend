@@ -246,8 +246,8 @@ app.post("/replicate", async (req, res) => {
       input: {
         prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
         refine: 'expert_ensemble_refiner',
-        high_noise_frac: '0.85',
-        lora_scale: '0.8',
+        high_noise_frac: '0.9',
+        lora_scale: '0.9',
       },
     });
 
