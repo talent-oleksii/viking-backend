@@ -14,6 +14,7 @@ import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
 import * as dotenv from "dotenv";
 import Stripe from "stripe";
+import { Resend } from "resend";
 
 dotenv.config();
 global.fetch = fetch;
@@ -21,6 +22,8 @@ global.Headers = Headers;
 
 const app = express();
 const port = 3000;
+
+const resend = new Resend("re_5zpzt8uu_2y1Y6cmkgQiGMZ7XpiKsZ7xU");
 
 const stripe = new Stripe(
   "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"
@@ -373,6 +376,20 @@ app.post("/stripe", async (req, res) => {
 
   console.log("Data: ", data);
   console.log("Error: ", error);
+
+  // After the for loop finishes, send an email
+  try {
+    const emailData = await resend.emails.send({
+      from: "AI Viking <team@aiviking.com>", // Replace with your actual details
+      to: [email], // Assuming data[0].email contains the user's email address
+      subject: "View Your Photos",
+      html: `<strong>Thanks for your payment!</strong><br>
+      <p>Your can view your photos at <a href="https://aiviking.com/${emailPrefix}">aiviking.com/${emailPrefix}</a></p>`,
+    });
+    console.log(emailData);
+  } catch (emailError) {
+    console.error(emailError);
+  }
 });
 
 // Final
