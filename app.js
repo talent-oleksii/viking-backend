@@ -218,8 +218,8 @@ app.post("/replicate", async (req, res) => {
   // Prompts
   let new_prompt = [
     "fighting in battle",
-    "fighting in battle",
-    "dancing in the rain",
+    "on a ship in a storm",
+    "fighting next to flames",
     "navigating the seas",
     "baking a cake",
     "on a date",
