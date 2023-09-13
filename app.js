@@ -245,6 +245,9 @@ app.post("/replicate", async (req, res) => {
     const response = await replicate.run(model_id, {
       input: {
         prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+        refine: 'expert_ensemble_refiner',
+        high_noise_frac: '0.85',
+        lora_scale: '0.8',
       },
     });
 
