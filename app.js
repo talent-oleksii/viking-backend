@@ -240,16 +240,16 @@ app.post("/replicate", async (req, res) => {
     "playing tennis",
   ];
 
-  // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+  // refine: 'expert_ensemble_refiner',
+  // high_noise_frac: 0.9,
+  // lora_scale: 0.9,
 
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
     const response = await replicate.run(model_id, {
       input: {
-        prompt: '8k close up linkedin profile picture of TOK, linkedin, professional jack suit, professional headshots, photo-realistic, 4k, high-resolution image, workplace settings, upper body, modern outfit, professional suit, business, blurred background, glass building, garden, bokeh',
-        refine: 'expert_ensemble_refiner',
-        high_noise_frac: 0.9,
-        lora_scale: 0.9,
+        prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+        negative_prompt: '(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck'
       },
     });
 
