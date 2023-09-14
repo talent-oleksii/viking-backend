@@ -248,8 +248,8 @@ app.post("/replicate", async (req, res) => {
       input: {
         prompt: '8k close up linkedin profile picture of TOK, linkedin, professional jack suit, professional headshots, photo-realistic, 4k, high-resolution image, workplace settings, upper body, modern outfit, professional suit, business, blurred background, glass building, garden, bokeh',
         refine: 'expert_ensemble_refiner',
-        high_noise_frac: '0.9',
-        lora_scale: '0.9',
+        high_noise_frac: 0.9,
+        lora_scale: 0.9,
       },
     });
 
