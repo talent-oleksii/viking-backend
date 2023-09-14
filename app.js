@@ -44,8 +44,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set max request size to 200MB
-app.use(bodyParser.json({ limit: "200mb" }));
-app.use(bodyParser.urlencoded({ limit: "200mb", extended: true }));
+app.use(bodyParser.json({ limit: "400mb" }));
+app.use(bodyParser.urlencoded({ limit: "400mb", extended: true }));
 
 // Enable CORS for all routes using the 'cors' middleware
 app.use(cors());
