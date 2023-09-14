@@ -363,9 +363,10 @@ app.post("/stripe", async (req, res) => {
       destination: "stockbet/sdxl-viking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-        // is_lora: false,
-        // crop_based_on_salience: false,
-        // use_face_detection_instead: true,
+        num_train_epochs: 10000,
+        is_lora: false,
+        crop_based_on_salience: false,
+        use_face_detection_instead: true,
       },
       webhook: "https://viking-zh8k.onrender.com/replicate",
     }
