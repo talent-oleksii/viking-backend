@@ -240,11 +240,13 @@ app.post("/replicate", async (req, res) => {
     "playing tennis",
   ];
 
+  // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
     const response = await replicate.run(model_id, {
       input: {
-        prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+        prompt: '8k close up linkedin profile picture of TOK, linkedin, professional jack suit, professional headshots, photo-realistic, 4k, high-resolution image, workplace settings, upper body, modern outfit, professional suit, business, blurred background, glass building, garden, bokeh',
         refine: 'expert_ensemble_refiner',
         high_noise_frac: '0.9',
         lora_scale: '0.9',
