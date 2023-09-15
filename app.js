@@ -198,6 +198,10 @@ app.post("/replicate", async (req, res) => {
   const partial = data[0].partial;
   console.log("Partial: ", partial);
 
+  // Declare sex
+  const sex = data[0].sex;
+  console.log("Sex: ", sex);
+
   // Declare order_type
   const order_type = data[0].order;
   console.log("Order type 1: ", order_type);
@@ -241,29 +245,56 @@ app.post("/replicate", async (req, res) => {
   // ];
 
   // Prompts
-  let new_prompt = [
-    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
-    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
-    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, in a raging dark storm at night, dark lighting, shadows, wet hair, wet skin, lightning in the sky, smile on his face",
-    "A photo of Elon Musk Scandinavian Viking man, from the waist up, playing a viking horn around the fire, the firelight illuminates his face, casting shadows on the other side of his face, his eyes are closed, focusing on the music, this picture is outside under a starry sky",
-    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing in a battle-torn village, swinging a sword in one hand, a shield in the other, with a wild look in his eyes, yelling in combat, scars on his face, blood on his shoulder, wearing viking armor, super realistic, high quality hd, facing the camera,",
-    "A photo of Elon Musk fierce Viking king, full body shot, sitting on a stone viking thrown, holding a viking spear, wearing traditional viking king clothing, emotionless, eyes looking ahead, in a room of viking townsmen. The foreground is blurred where the other vikings are. The room is dimly lit with candle light",
-    "A photo of Elon Musk Scandinavian man, full body shot, standing in the northern woods at night, there are glowing runes around him, he is holding a rune in his hand, a curious look on his face, he is looking up at the sky",
-    "A photo of Elon Musk viking man, looking at a wooden board game, laughing with his friends, high quality, hd, super realistic, in the forest surrounded by pitched tents",
-    "A photo of Elon Musk fierce Viking warrior man, sitting at a table at a grand feast with other vikings, they are laughing and singing, lit by candle light, eating meats and bread, hyper-realistic, photo-realistic",
-    "A photo of Elon Musk fierce Viking hunter man, half body shot, standing in a rocky coastline, pulling back on a bow and arrow, focusing on his shot, one eye closed, scars on his face, wearing fir skins, muscle definition",
-    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing over the slain body of a dragon, sword in hand, flaming torch in the other, looking at his back, with the dragon in front of him,",
-    "A photo of Elon Musk a viking father, surrounded by his family, the kids are playing with wooden swords, in an ancient viking house, lit by candles, the focus is on the father",
-    "A photo of Elon Musk a viking man in a tent filled with maps and war plans, wearing armor, looking down at a map, wearing an axe, shield and holding a spear in one hand, with a fir cape",
-    "A photo of Elon Musk fierce Viking warrior man in heat of battle, blocking arrows with his shield, in burning house, close-up, ultra-realistic, sweat running down his face, wearing a horned viking helmet",
-    "A photo of Elon Musk Viking warrior man dead after battle, with his glowing soul being carried up to clouds by a valkyrie angel at night, moon in the sky, in the Scandinavian north by a lake",
-    "A photo of Elon Musk Viking man, a close-up of him forging a sword from hot metal, Close up, blurred background, super realistic, photo-realistic, bald head, beard, lit by the glow of the weapon and reflection of the light, super realistic, hyper realistic, sweat going down his face",
-    "A photo of Elon Musk Viking man, walking through a Viking town looking at the shops. There is fruit, and wooden bracelets and swords for sale. Close up, blurred background, super realistic, photo-realistic, perspective of looking over his shoulder, long flowing hair, beard",
-    "A photo of Elon Musk Viking man, full body shot, walking in a snow-covered forest, wearing traditional winter Viking clothes, holding a hawk in his gloved hand, wearing a viking backpack with supplied and weapons, super realistic, hyper-realistic, photo-realistic,",
-    "A photo of Elon Musk Viking warrior man, a full body shot of him walking next to a giant wolf, in winter forest, it's snowing, looking ahead with determination, snow on clothes, feet are deep in snow, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,",
-    "A photo of Elon Musk Viking warrior man, a long view of him kneeling in the snow by a lake, mourning over a grave super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic,dramatic lighting",
-    "A photo of Elon Musk Viking warrior man, at a viking wedding, guests are blurred in the background, traditional Viking wedding clothes, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic, dramatic lighting, ring exchange with norse symbols, close-up",
+  let man_prompt = [
+    "A photo of TOK fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
+    "A photo of TOK fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
+    "A photo of TOK fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, in a raging dark storm at night, dark lighting, shadows, wet hair, wet skin, lightning in the sky, smile on his face",
+    "A photo of TOK Scandinavian Viking man, from the waist up, playing a viking horn around the fire, the firelight illuminates his face, casting shadows on the other side of his face, his eyes are closed, focusing on the music, this picture is outside under a starry sky",
+    "A photo of TOK fierce Viking warrior man, full body shot, standing in a battle-torn village, swinging a sword in one hand, a shield in the other, with a wild look in his eyes, yelling in combat, scars on his face, blood on his shoulder, wearing viking armor, super realistic, high quality hd, facing the camera,",
+    "A photo of TOK fierce Viking king, full body shot, sitting on a stone viking thrown, holding a viking spear, wearing traditional viking king clothing, emotionless, eyes looking ahead, in a room of viking townsmen. The foreground is blurred where the other vikings are. The room is dimly lit with candle light",
+    "A photo of TOK Scandinavian man, full body shot, standing in the northern woods at night, there are glowing runes around him, he is holding a rune in his hand, a curious look on his face, he is looking up at the sky",
+    "A photo of TOK viking man, looking at a wooden board game, laughing with his friends, high quality, hd, super realistic, in the forest surrounded by pitched tents",
+    "A photo of TOK fierce Viking warrior man, sitting at a table at a grand feast with other vikings, they are laughing and singing, lit by candle light, eating meats and bread, hyper-realistic, photo-realistic",
+    "A photo of TOK fierce Viking hunter man, half body shot, standing in a rocky coastline, pulling back on a bow and arrow, focusing on his shot, one eye closed, scars on his face, wearing fir skins, muscle definition",
+    "A photo of TOK fierce Viking warrior man, full body shot, standing over the slain body of a dragon, sword in hand, flaming torch in the other, looking at his back, with the dragon in front of him,",
+    "A photo of TOK a viking father, surrounded by his family, the kids are playing with wooden swords, in an ancient viking house, lit by candles, the focus is on the father",
+    "A photo of TOK a viking man in a tent filled with maps and war plans, wearing armor, looking down at a map, wearing an axe, shield and holding a spear in one hand, with a fir cape",
+    "A photo of TOK fierce Viking warrior man in heat of battle, blocking arrows with his shield, in burning house, close-up, ultra-realistic, sweat running down his face, wearing a horned viking helmet",
+    "A photo of TOK Viking warrior man dead after battle, with his glowing soul being carried up to clouds by a valkyrie angel at night, moon in the sky, in the Scandinavian north by a lake",
+    "A photo of TOK Viking man, a close-up of him forging a sword from hot metal, Close up, blurred background, super realistic, photo-realistic, bald head, beard, lit by the glow of the weapon and reflection of the light, super realistic, hyper realistic, sweat going down his face",
+    "A photo of TOK Viking man, walking through a Viking town looking at the shops. There is fruit, and wooden bracelets and swords for sale. Close up, blurred background, super realistic, photo-realistic, perspective of looking over his shoulder, long flowing hair, beard",
+    "A photo of TOK Viking man, full body shot, walking in a snow-covered forest, wearing traditional winter Viking clothes, holding a hawk in his gloved hand, wearing a viking backpack with supplied and weapons, super realistic, hyper-realistic, photo-realistic,",
+    "A photo of TOK Viking warrior man, a full body shot of him walking next to a giant wolf, in winter forest, it's snowing, looking ahead with determination, snow on clothes, feet are deep in snow, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,",
+    "A photo of TOK Viking warrior man, a long view of him kneeling in the snow by a lake, mourning over a grave super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic,dramatic lighting",
+    "A photo of TOK Viking warrior man, at a viking wedding, guests are blurred in the background, traditional Viking wedding clothes, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic, dramatic lighting, ring exchange with norse symbols, close-up",
   ];
+
+  let woman_prompt = [
+    "A photo of TOK fierce Viking warrior woman, full body shot, standing on an epic wooden Viking boat, holding a Viking axe in the sky, looking out to sea, wearing fur Viking clothes with traditional Viking armor, bright energized eyes, braided hair, other Vikings are on the boat, blurred in the background",
+    "A photo of TOK fierce Viking warrior woman, full body shot, standing on an epic wooden Viking boat, holding a Viking axe in the sky, looking out to sea, wearing fur Viking clothes with traditional Viking armor, bright energized eyes, braided hair, other Vikings are on the boat, blurred in the background",
+    "A photo of TOK fierce Viking warrior woman, full body shot, standing on an epic wooden Viking boat, in a raging dark storm at night, dark lighting, shadows, wet braided hair, wet skin, lightning in the sky, smile on her face",
+    "A photo of TOK Scandinavian Viking woman, from the waist up, playing a Viking horn around the fire, the firelight illuminates her face, casting shadows on the other side of her face, her eyes are closed, focusing on the music, braided hair, this picture is outside under a starry sky",
+    "A photo of TOK fierce Viking warrior woman, full body shot, standing in a battle-torn village, swinging a sword in one hand, a shield in the other, with a wild look in her eyes, yelling in combat, scars on her face, blood on her shoulder, wearing Viking armor, super realistic, high quality HD, facing the camera",
+    "A photo of TOK fierce Viking queen, full body shot, sitting on a stone Viking throne, holding a Viking spear, wearing traditional Viking queen clothing, emotionless, eyes looking ahead, braided hair, in a room of Viking townsmen. The foreground is blurred where the other Vikings are. The room is dimly lit with candlelight",
+    "A photo of TOK Scandinavian woman, full body shot, standing in the northern woods at night, there are glowing runes around her, she is holding a rune in her hand, a curious look on her face, braided hair, she is looking up at the sky",
+    "A photo of TOK Viking woman, looking at a wooden board game, laughing with her friends, high quality, HD, super realistic, in the forest surrounded by pitched tents, braided hair",
+    "A photo of TOK fierce Viking warrior woman, sitting at a table at a grand feast with other Vikings, they are laughing and singing, lit by candlelight, eating meats and bread, braided hair, hyper-realistic, photo-realistic",
+    "A photo of TOK fierce Viking hunter woman, half body shot, standing on a rocky coastline, pulling back on a bow and arrow, focusing on her shot, one eye closed, scars on her face, wearing fur skins, muscle definition, braided hair",
+    "A photo of TOK fierce Viking warrior woman, full body shot, standing over the slain body of a dragon, sword in hand, flaming torch in the other, looking at her back, with the dragon in front of her, braided hair",
+    "A photo of TOK a Viking mother, surrounded by her family, the kids are playing with wooden swords, in an ancient Viking house, lit by candles, braided hair, the focus is on the mother",
+    "A photo of TOK Viking woman in a tent filled with maps and war plans, wearing armor, looking down at a map, wearing an axe, shield and holding a spear in one hand, with a fur cape, braided hair",
+    "A photo of TOK fierce Viking warrior woman in the heat of battle, blocking arrows with her shield, in a burning house, close-up, ultra-realistic, sweat running down her face, wearing a horned Viking helmet, braided hair",
+    "A photo of TOK Viking warrior woman dead after battle, with her glowing soul being carried up to clouds by a Valkyrie angel at night, moon in the sky, in the Scandinavian north by a lake, braided hair",
+    "A photo of TOK Viking woman, a close-up of her forging a sword from hot metal, Close up, blurred background, super realistic, photo-realistic, bald head, lit by the glow of the weapon and reflection of the light, super realistic, hyper-realistic, sweat going down her face, braided hair",
+    "A photo of TOK Viking woman, walking through a Viking town looking at the shops. There is fruit, and wooden bracelets and swords for sale. Close up, blurred background, super realistic, photo-realistic, perspective of looking over her shoulder, long flowing braided hair",
+    "A photo of TOK Viking woman, full body shot, walking in a snow-covered forest, wearing traditional winter Viking clothes, holding a hawk in her gloved hand, wearing a Viking backpack with supplies and weapons, super realistic, hyper-realistic, photo-realistic, braided hair",
+    "A photo of TOK Viking warrior woman, a full body shot of her walking next to a giant wolf, in a winter forest, it's snowing, looking ahead with determination, snow on clothes, feet are deep in snow, super realistic, hyper-realistic, photo-realistic, dramatic lighting, deep blacks, max detail, realistic shadows, braided hair",
+    "A photo of TOK Viking warrior woman, a long view of her kneeling in the snow by a lake, mourning over a grave, super realistic, hyper-realistic, photo-realistic, dramatic lighting, deep blacks, max detail, realistic shadows, epic, dramatic lighting, braided hair",
+    "A photo of TOK Viking warrior woman, at a Viking wedding, guests are blurred in the background, traditional Viking wedding clothes, super realistic, hyper-realistic, photo-realistic, dramatic lighting, deep blacks, max detail, realistic shadows, epic, dramatic lighting, ring exchange with Norse symbols, close-up, braided hair",
+  ];
+
+  // Determine the appropriate prompt array based on the value of "sex"
+  let selected_prompt = sex === "man" ? man_prompt : woman_prompt;
 
   // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
 
@@ -271,7 +302,7 @@ app.post("/replicate", async (req, res) => {
   for (let i = 1; i <= loopCount; i++) {
     const response = await replicate.run(model_id, {
       input: {
-        prompt: `${new_prompt[i]}`,
+        prompt: selected_prompt[i], // Use the selected prompt
         negative_prompt:
           "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
       },
