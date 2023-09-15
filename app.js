@@ -215,41 +215,65 @@ app.post("/replicate", async (req, res) => {
   // Send status
   res.status(200).send("API triggered");
 
+  // // Prompts
+  // let new_prompt = [
+  //   "fighting in battle",
+  //   "fighting on a ship",
+  //   "fighting next to flames",
+  //   "navigating the seas",
+  //   "baking a cake",
+  //   "on a date",
+  //   "playing the piano",
+  //   "at a party",
+  //   "at the beach",
+  //   "cooking dinner",
+  //   "flying a plane",
+  //   "riding a horse",
+  //   "going to the gym",
+  //   "in the kitchen",
+  //   "playing the guitar",
+  //   "hiking in the mountains",
+  //   "building a house",
+  //   "running a marathon",
+  //   "in the garden",
+  //   "having a picnic",
+  //   "playing tennis",
+  // ];
+
   // Prompts
   let new_prompt = [
-    "fighting in battle",
-    "fighting on a ship",
-    "fighting next to flames",
-    "navigating the seas",
-    "baking a cake",
-    "on a date",
-    "playing the piano",
-    "at a party",
-    "at the beach",
-    "cooking dinner",
-    "flying a plane",
-    "riding a horse",
-    "going to the gym",
-    "in the kitchen",
-    "playing the guitar",
-    "hiking in the mountains",
-    "building a house",
-    "running a marathon",
-    "in the garden",
-    "having a picnic",
-    "playing tennis",
+    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
+    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, holding a viking axe in the sky, wearing fur viking clothes with traditional viking armor, looking out to sea, with a beard, bright energized eyes, other vikings are on the boat, blurred in the background",
+    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing on an epic wooden viking boat, in a raging dark storm at night, dark lighting, shadows, wet hair, wet skin, lightning in the sky, smile on his face",
+    "A photo of Elon Musk Scandinavian Viking man, from the waist up, playing a viking horn around the fire, the firelight illuminates his face, casting shadows on the other side of his face, his eyes are closed, focusing on the music, this picture is outside under a starry sky",
+    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing in a battle-torn village, swinging a sword in one hand, a shield in the other, with a wild look in his eyes, yelling in combat, scars on his face, blood on his shoulder, wearing viking armor, super realistic, high quality hd, facing the camera,",
+    "A photo of Elon Musk fierce Viking king, full body shot, sitting on a stone viking thrown, holding a viking spear, wearing traditional viking king clothing, emotionless, eyes looking ahead, in a room of viking townsmen. The foreground is blurred where the other vikings are. The room is dimly lit with candle light",
+    "A photo of Elon Musk Scandinavian man, full body shot, standing in the northern woods at night, there are glowing runes around him, he is holding a rune in his hand, a curious look on his face, he is looking up at the sky",
+    "A photo of Elon Musk viking man, looking at a wooden board game, laughing with his friends, high quality, hd, super realistic, in the forest surrounded by pitched tents",
+    "A photo of Elon Musk fierce Viking warrior man, sitting at a table at a grand feast with other vikings, they are laughing and singing, lit by candle light, eating meats and bread, hyper-realistic, photo-realistic",
+    "A photo of Elon Musk fierce Viking hunter man, half body shot, standing in a rocky coastline, pulling back on a bow and arrow, focusing on his shot, one eye closed, scars on his face, wearing fir skins, muscle definition",
+    "A photo of Elon Musk fierce Viking warrior man, full body shot, standing over the slain body of a dragon, sword in hand, flaming torch in the other, looking at his back, with the dragon in front of him,",
+    "A photo of Elon Musk a viking father, surrounded by his family, the kids are playing with wooden swords, in an ancient viking house, lit by candles, the focus is on the father",
+    "A photo of Elon Musk a viking man in a tent filled with maps and war plans, wearing armor, looking down at a map, wearing an axe, shield and holding a spear in one hand, with a fir cape",
+    "A photo of Elon Musk fierce Viking warrior man in heat of battle, blocking arrows with his shield, in burning house, close-up, ultra-realistic, sweat running down his face, wearing a horned viking helmet",
+    "A photo of Elon Musk Viking warrior man dead after battle, with his glowing soul being carried up to clouds by a valkyrie angel at night, moon in the sky, in the Scandinavian north by a lake",
+    "A photo of Elon Musk Viking man, a close-up of him forging a sword from hot metal, Close up, blurred background, super realistic, photo-realistic, bald head, beard, lit by the glow of the weapon and reflection of the light, super realistic, hyper realistic, sweat going down his face",
+    "A photo of Elon Musk Viking man, walking through a Viking town looking at the shops. There is fruit, and wooden bracelets and swords for sale. Close up, blurred background, super realistic, photo-realistic, perspective of looking over his shoulder, long flowing hair, beard",
+    "A photo of Elon Musk Viking man, full body shot, walking in a snow-covered forest, wearing traditional winter Viking clothes, holding a hawk in his gloved hand, wearing a viking backpack with supplied and weapons, super realistic, hyper-realistic, photo-realistic,",
+    "A photo of Elon Musk Viking warrior man, a full body shot of him walking next to a giant wolf, in winter forest, it's snowing, looking ahead with determination, snow on clothes, feet are deep in snow, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,",
+    "A photo of Elon Musk Viking warrior man, a long view of him kneeling in the snow by a lake, mourning over a grave super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic,dramatic lighting",
+    "A photo of Elon Musk Viking warrior man, at a viking wedding, guests are blurred in the background, traditional Viking wedding clothes, super realistic, hyper-realistic, photo-realistic, dramatic lightning, deep blacks, max detail, realistic shadows,epic, dramatic lighting, ring exchange with norse symbols, close-up",
   ];
 
-  // refine: 'expert_ensemble_refiner',
-  // high_noise_frac: 0.9,
-  // lora_scale: 0.9,
+  // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
 
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
     const response = await replicate.run(model_id, {
       input: {
-        prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
-        negative_prompt: '(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck'
+        prompt: `${new_prompt[i]}`,
+        negative_prompt:
+          "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
       },
     });
 
