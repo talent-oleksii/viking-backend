@@ -420,15 +420,14 @@ app.post("/stripe", async (req, res) => {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
         num_train_epochs: 10000,
         is_lora: false,
+        crop_based_on_salience: false,
+        use_face_detection_instead: true,
       },
       webhook: "https://viking-zh8k.onrender.com/replicate",
     }
   );
   console.log(`URL: https://replicate.com/p/${training.id}`);
   console.log(training);
-
-  // crop_based_on_salience: false,
-  // use_face_detection_instead: true,
 
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
