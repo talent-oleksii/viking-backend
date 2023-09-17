@@ -419,7 +419,7 @@ app.post("/stripe", async (req, res) => {
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
         is_lora: false,
-        max_train_steps: 1000,
+        max_train_steps: 2000,
         use_face_detection_instead: true,
       },
       webhook: "https://viking-zh8k.onrender.com/replicate",
