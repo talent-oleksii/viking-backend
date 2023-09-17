@@ -427,7 +427,7 @@ app.post("/stripe", async (req, res) => {
     }
   );
   console.log(`URL: https://replicate.com/p/${training.id}`);
-  console.log(training);
+  console.log(training); 
 
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
