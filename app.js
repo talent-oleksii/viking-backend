@@ -419,6 +419,7 @@ app.post("/stripe", async (req, res) => {
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
         num_train_epochs: 8000,
+        train_batch_size: 2,
         is_lora: false,
         crop_based_on_salience: false,
         use_face_detection_instead: true,
