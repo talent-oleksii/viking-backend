@@ -418,7 +418,7 @@ app.post("/stripe", async (req, res) => {
       destination: "stockbet/sdxl-viking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-        num_train_epochs: 6000,
+        num_train_epochs: 8000,
         is_lora: false,
         crop_based_on_salience: false,
         use_face_detection_instead: true,
