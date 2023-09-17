@@ -421,6 +421,7 @@ app.post("/stripe", async (req, res) => {
         is_lora: false,
         max_train_steps: 2000,
         crop_based_on_salience: false,
+        use_face_detection_instead: true,
       },
       webhook: "https://viking-zh8k.onrender.com/replicate",
     }
