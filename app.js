@@ -418,9 +418,8 @@ app.post("/stripe", async (req, res) => {
       destination: "stockbet/sdxl-viking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-        num_train_epochs: 8000,
-        train_batch_size: 2,
         is_lora: false,
+        max_train_steps: 2000,
         crop_based_on_salience: false,
         use_face_detection_instead: true,
       },
@@ -429,6 +428,9 @@ app.post("/stripe", async (req, res) => {
   );
   console.log(`URL: https://replicate.com/p/${training.id}`);
   console.log(training); 
+
+  // num_train_epochs: 8000,
+  // train_batch_size: 2,
 
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
