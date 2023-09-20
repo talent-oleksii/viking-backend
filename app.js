@@ -339,7 +339,7 @@ app.post("/replicate", async (req, res) => {
   }
 });
 
-// Temp
+// Temp 
 app.post("/trigger-training", async (req, res) => {
   const { email } = req.body;
   console.log("Email: ", email);
