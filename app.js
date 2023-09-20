@@ -370,11 +370,11 @@ app.post("/trigger-training", async (req, res) => {
     "sdxl",
     "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
     {
-      destination: "stockbet/sdxl-viking",
+      destination: "matthewiversen333/aiviking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
       },
-      webhook: "https://viking-zh8k.onrender.com/replicate",
+      webhook: "https://aiviking.onrender.com/replicate",
     }
   );
 
@@ -415,14 +415,14 @@ app.post("/stripe", async (req, res) => {
     "sdxl",
     "8beff3369e81422112d93b89ca01426147de542cd4684c244b673b105188fe5f",
     {
-      destination: "stockbet/sdxl-viking",
+      destination: "matthewiversen333/aiviking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
         is_lora: false,
         crop_based_on_salience: false,
         use_face_detection_instead: true,
       },
-      webhook: "https://viking-zh8k.onrender.com/replicate",
+      webhook: "https://aiviking.onrender.com/replicate",
     }
   );
   console.log(`URL: https://replicate.com/p/${training.id}`);
