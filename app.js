@@ -419,7 +419,6 @@ app.post("/stripe", async (req, res) => {
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
         is_lora: false,
-        max_train_steps: 1500,
         crop_based_on_salience: false,
         use_face_detection_instead: true,
       },
@@ -428,8 +427,6 @@ app.post("/stripe", async (req, res) => {
   );
   console.log(`URL: https://replicate.com/p/${training.id}`);
   console.log(training);
-
-  // train_batch_size: 2,
 
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
