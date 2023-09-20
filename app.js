@@ -370,7 +370,7 @@ app.post("/trigger-training", async (req, res) => {
     "sdxl",
     "a00d0b7dcbb9c3fbb34ba87d2d5b46c56969c84a628bf778a7fdaec30b1b99c5",
     {
-      destination: "matthewiversen333/aivking",
+      destination: "matthewiversen333/aiviking",
       input: {
         input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${email}.zip`,
       },
