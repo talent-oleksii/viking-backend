@@ -23,7 +23,7 @@ global.Headers = Headers;
 const app = express();
 const port = 3000;
 
-const resend = new Resend("re_5zpzt8uu_2y1Y6cmkgQiGMZ7XpiKsZ7xU");
+const resend = new Resend("re_TSLCdoxm_2C6GFXZMpvEv1BhNSPqYsKTv");
 
 const stripe = new Stripe(
   "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"
