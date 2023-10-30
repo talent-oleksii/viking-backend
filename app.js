@@ -295,18 +295,38 @@ app.post("/replicate", async (req, res) => {
 
   // Determine the appropriate prompt array based on the value of "sex"
   let selected_prompt = sex === "man" ? man_prompt : woman_prompt;
-
+  let viking_type = sex === "man" ? "viking_man" : "viking_woman";
+  const storagePath = "/storage/v1/object/public/";
   // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+  // const partial = data[0].partial;
+  // console.log("Partial: ", partial);
+
+  const firstImg = `${partial}_0.png`;
+  console.log("First Image Name: ", firstImg);
 
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
-    const response = await replicate.run(model_id, {
-      input: {
-        prompt: selected_prompt[i], // Use the selected prompt
-        negative_prompt:
-          "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
-      },
-    });
+
+    let imageName = (sex === "man" ? "man viking " : "woman viking ") + i + ".png";
+    let imageURL = supabaseUrl + storagePath + viking_type + "/" + imageName;
+    const response = await replicate.run(
+      "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
+      {
+        input: {
+          target_image: imageURL,
+          swap_image: firstImg
+        }
+      }
+    );
+
+
+    // const response = await replicate.run(model_id, {
+    //   input: {
+    //     prompt: selected_prompt[i], // Use the selected prompt
+    //     negative_prompt:
+    //       "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime:1.4), text, close up, cropped, out of frame, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck",
+    //   },
+    // });
 
     console.log("Response: ", response);
     console.log(response);
