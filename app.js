@@ -10,18 +10,23 @@ import axios from "axios";
 import { createClient } from "@supabase/supabase-js";
 import Replicate from "replicate";
 import { Headers } from "node-fetch";
-import fetch from "node-fetch";
 import cors from "cors"; // Import the 'cors' middleware
 import * as dotenv from "dotenv";
 import Stripe from "stripe";
+import path from 'path';
 import { Resend } from "resend";
+import fs from 'fs-extra';
+import fetch from 'node-fetch';
+import AdmZip from "adm-zip";
+
+import { spawn } from "child_process";
 
 dotenv.config();
 global.fetch = fetch;
 global.Headers = Headers;
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 const resend = new Resend("re_TSLCdoxm_2C6GFXZMpvEv1BhNSPqYsKTv");
 
@@ -29,9 +34,9 @@ const stripe = new Stripe(
   "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"
 );
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-});
+// const replicate = new Replicate({
+//   auth: process.env.REPLICATE_API_TOKEN,
+// });
 
 // Initialize Supabase client
 const supabaseUrl = "https://remwbrfkzindyqlksvyv.supabase.co";
@@ -412,6 +417,10 @@ app.post("/trigger-training", async (req, res) => {
   console.log("Error: ", error);
 });
 
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Stripe webhook
 app.post("/stripe", async (req, res) => {
   // Check event type
@@ -430,49 +439,201 @@ app.post("/stripe", async (req, res) => {
 
   res.json({ received: true });
 
-  const training = await replicate.trainings.create(
-    "stability-ai",
-    "sdxl",
-    "8beff3369e81422112d93b89ca01426147de542cd4684c244b673b105188fe5f",
-    {
-      destination: "matthewiversen333/aiviking",
-      input: {
-        input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-        is_lora: false,
-        crop_based_on_salience: false,
-        use_face_detection_instead: true,
-      },
-      webhook: "https://aivking.onrender.com/replicate",
-    }
-  );
-  console.log(`URL: https://replicate.com/p/${training.id}`);
-  console.log(training);
+  if (fs.existsSync(emailPrefix)) {
+    fs.removeSync(emailPrefix);
+  }
+  if (!fs.existsSync(emailPrefix)) {
+    fs.mkdirSync(emailPrefix, { recursive: true });
+  }
+
+  //download rar file
+  const rar = await fetch(`https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`);
+  if (!rar.ok) {
+    throw new Error('failed to download file');
+  }
+
+  if (fs.existsSync(`${emailPrefix}/${emailPrefix}.zip`)) fs.unlinkSync(`${emailPrefix}/${emailPrefix}.zip`);
+  const savePath = path.join(emailPrefix, `${emailPrefix}.zip`);
+  const fileStream = fs.createWriteStream(savePath);
+
+  let imageCount = 0;
+
+  await new Promise((resolve, reject) => {
+    rar.body.pipe(fileStream);
+    rar.body.on('error', (err) => {
+      reject(err);
+    });
+    fileStream.on('finish', function () {
+      const zip = new AdmZip(savePath);
+      const zipEntries = zip.getEntries();
+      imageCount = zipEntries.length;
+
+      const zipDirectory = path.dirname(savePath);
+
+      zipEntries.forEach((zipEntry) => {
+        // Extract each entry in the zip file
+        const entryPath = path.join(zipDirectory, zipEntry.entryName);
+        zip.extractEntryTo(zipEntry, zipDirectory, false, true);
+    });
+      resolve();
+    });
+  });
+
+
+  // we must send to face swap api those pictures 
+  // const training = await replicate.trainings.create(
+  //   "stability-ai",
+  //   "sdxl",
+  //   "8beff3369e81422112d93b89ca01426147de542cd4684c244b673b105188fe5f",
+  //   {
+  //     destination: "matthewiversen333/aiviking",
+  //     input: {
+  //       input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
+  //       is_lora: false,
+  //       crop_based_on_salience: false,
+  //       use_face_detection_instead: true,
+  //     },
+  //     webhook: "https://aivking.onrender.com/replicate",
+  //   }
+  // );
+  // console.log(`URL: https://replicate.com/p/${training.id}`);
+  // console.log(training);
 
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
     .from("users")
-    .update({
-      training_id: training.id,
-      paid: true,
-    })
+    .select('*')
     .eq("email", email);
 
-  console.log("Data: ", data);
-  console.log("Error: ", error);
+  console.log('dat:', data);
+
+  const partial = data[0].partial;
+  console.log("Partial: ", partial);
+
+  // Declare sex
+  const sex = data[0].sex;
+
+  // Declare order_type
+  const order_type = data[0].order;
+
+  // Determine loop count
+  let loopCount = 0;
+  if (order_type === "8") {
+    loopCount = 2;
+  } else {
+    loopCount = 20;
+  }
+  console.log("Loop count: ", loopCount);
+
+  // let selected_prompt = sex === "man" ? man_prompt : woman_prompt;
+  let viking_type = sex === "man" ? "viking_man" : "viking_woman";
+  const storagePath = "/storage/v1/object/public/";
+  // prompt: `a photo of TOK wearing Viking armor while ${new_prompt[i]}`,
+  // const partial = data[0].partial;
+  // console.log("Partial: ", partial);
+
+  const vikingImagePath = 'viking';
+  fs.mkdirSync(vikingImagePath, { recursive: true });
+
+  // Trigger replicate
+  for (let i = 1; i <= loopCount; i++) {
+
+    const imageName = `${sex === "man" ? "man viking " : "woman viking "}(${sex === "man" ? getRandomNumber(1, 43) : getRandomNumber(1, 33)}).png`;
+    const imageURL = supabaseUrl + storagePath + viking_type + "/" + imageName;
+    // const response = await replicate.run(
+    //   "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
+    //   {
+    //     input: {
+    //       target_image: imageURL,
+    //       swap_image: firstImg
+    //     }
+    //   }
+    // );
+
+    // download image
+    const vikingImage = await fetch(imageURL);
+    if (!fs.existsSync(`${vikingImagePath}/${imageName}`)) {
+      const savePath = path.join(vikingImagePath, imageName);
+      const fileStream = fs.createWriteStream(savePath);
+
+      await new Promise((resolve, reject) => {
+        vikingImage.body.pipe(fileStream);
+        vikingImage.body.on('error', (err) => {
+          reject(err);
+        });
+
+        fileStream.on('finish', function () {
+          resolve();
+        });
+      });
+    }
+
+    const userRandom = getRandomNumber(1, imageCount);
+
+    const files = fs.readdirSync(emailPrefix);
+    files.forEach(file => {
+      if (file.startsWith(`${userRandom}`)) {
+        console.log('file:', file, `${vikingImagePath}/${imageName}`);
+        const pythonScript = 'app.py';
+        const arg1 = `${vikingImagePath}/${imageName}`;
+        const arg2 = `${emailPrefix}/${file}`;
+        const pythonProcess = spawn("python", [pythonScript, arg1, arg2]);
+
+        pythonProcess.stdout.on('data', (data) => {
+          console.log(`Python stdout: ${data}`);
+        });
+        
+        // Listen to standard error
+        pythonProcess.stderr.on('data', (data) => {
+            console.error(`Python stderr: ${data}`);
+        });
+        
+        // Listen to process exit event
+        pythonProcess.on('close', async (code) => {
+            console.log(`Python process exited with code ${code}`);
+
+            if (code == 0) {
+              const buffer = fs.readFileSync(`outputs/${file}`);
+
+              // Upload the image to Supabase Storage
+              await supabase.storage
+                .from("results")
+                .upload(`${partial}${i}.png`, buffer, {
+                  cacheControl: "3600",
+                  upsert: true,
+                });
+            }
+        });
+        return;
+      }
+    });
+
+    // Download the image using fetch
+    // const fetchResponse = await fetch(response[0]);
+    // const buffer = await fetchResponse.buffer();
+
+    // // Upload the image to Supabase Storage
+    // await supabase.storage
+    //   .from("results")
+    //   .upload(`${partial}${i}.png`, buffer, {
+    //     cacheControl: "3600",
+    //     upsert: true,
+    //   });
+  }
 
   // After the for loop finishes, send an email
-  try {
-    const emailData = await resend.emails.send({
-      from: "AI Viking <team@aiviking.com>", // Replace with your actual details
-      to: [email], // Assuming data[0].email contains the user's email address
-      subject: "View Your Photos",
-      html: `<strong>Thanks for placing an order!</strong><br><br>
-      <p>Your can view your photos at <a href="https://aiviking.com/${emailPrefix}">aiviking.com/${emailPrefix}</a>.</p>`,
-    });
-    console.log(emailData);
-  } catch (emailError) {
-    console.error(emailError);
-  }
+  // try {
+  //   const emailData = await resend.emails.send({
+  //     from: "AI Viking <team@aiviking.com>", // Replace with your actual details
+  //     to: [email], // Assuming data[0].email contains the user's email address
+  //     subject: "View Your Photos",
+  //     html: `<strong>Thanks for placing an order!</strong><br><br>
+  //     <p>Your can view your photos at <a href="https://aiviking.com/${emailPrefix}">aiviking.com/${emailPrefix}</a>.</p>`,
+  //   });
+  //   console.log(emailData);
+  // } catch (emailError) {
+  //   console.error(emailError);
+  // }
 });
 
 // Final

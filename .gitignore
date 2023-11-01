@@ -14,3 +14,5 @@ dist/
 # OS and Editor folders
 .DS_Store
 .vscode/
+
+inswapper_128.onnx
