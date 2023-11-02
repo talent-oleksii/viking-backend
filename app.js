@@ -439,6 +439,10 @@ app.post("/stripe", async (req, res) => {
 
   res.json({ received: true });
 
+  if (!fs.existsSync('outputs')) {
+    fs.mkdirSync('outputs');
+  }
+
   if (fs.existsSync(emailPrefix)) {
     fs.removeSync(emailPrefix);
   }
