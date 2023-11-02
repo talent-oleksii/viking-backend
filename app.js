@@ -542,7 +542,7 @@ app.post("/stripe", async (req, res) => {
   // Trigger replicate
   for (let i = 1; i <= loopCount; i++) {
 
-    const imageName = `${sex === "man" ? "man viking " : "woman viking "}(${sex === "man" ? getRandomNumber(1, 36) : getRandomNumber(1, 33)}).png`;
+    const imageName = `${sex === "man" ? "man viking " : "woman viking "}(${sex === "man" ? getRandomNumber(1, 75) : getRandomNumber(1, 33)}).png`;
     const imageURL = supabaseUrl + storagePath + viking_type + "/" + imageName;
     // const response = await replicate.run(
     //   "lucataco/faceswap:9a4298548422074c3f57258c5d544497314ae4112df80d116f0d2109e843d20d",
