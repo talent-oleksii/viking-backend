@@ -575,38 +575,42 @@ app.post("/stripe", async (req, res) => {
     const userRandom = getRandomNumber(1, imageCount);
 
     const files = fs.readdirSync(emailPrefix);
-    files.forEach(file => {
+    files.forEach(async file => {
       if (file.startsWith(`${userRandom}`)) {
-        console.log('file:', file, `${vikingImagePath}/${imageName}`);
-        const pythonScript = 'app.py';
-        const arg1 = `${vikingImagePath}/${imageName}`;
-        const arg2 = `${emailPrefix}/${file}`;
-        const pythonProcess = spawn("python", [pythonScript, arg1, arg2]);
 
-        pythonProcess.stdout.on('data', (data) => {
-          console.log(`Python stdout: ${data}`);
-        });
-        
-        // Listen to standard error
-        pythonProcess.stderr.on('data', (data) => {
-            console.error(`Python stderr: ${data}`);
-        });
-        
-        // Listen to process exit event
-        pythonProcess.on('close', async (code) => {
-            console.log(`Python process exited with code ${code}`);
+        await new Promise((resolve, reject) => {
+          const pythonScript = 'app.py';
+          const arg1 = `${vikingImagePath}/${imageName}`;
+          const arg2 = `${emailPrefix}/${file}`;
+          const pythonProcess = spawn("python", [pythonScript, arg1, arg2]);
 
-            if (code == 0) {
-              const buffer = fs.readFileSync(`outputs/${file}`);
+          pythonProcess.stdout.on('data', (data) => {
+            console.log(`Python stdout: ${data}`);
+          });
+          
+          // Listen to standard error
+          pythonProcess.stderr.on('data', (data) => {
+              console.error(`Python stderr: ${data}`);
+          });
+          
+          // Listen to process exit event
+          pythonProcess.on('close', async (code) => {
+              console.log(`Python process exited with code ${code}`);
 
-              // Upload the image to Supabase Storage
-              await supabase.storage
-                .from("results")
-                .upload(`${partial}${i}.png`, buffer, {
-                  cacheControl: "3600",
-                  upsert: true,
-                });
-            }
+              if (code == 0) {
+                const buffer = fs.readFileSync(`outputs/${file}`);
+
+                // Upload the image to Supabase Storage
+                await supabase.storage
+                  .from("results")
+                  .upload(`${partial}${i}.png`, buffer, {
+                    cacheControl: "3600",
+                    upsert: true,
+                  });
+              }
+
+              resolve();
+          });
         });
         return;
       }
