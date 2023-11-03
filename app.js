@@ -483,26 +483,6 @@ app.post("/stripe", async (req, res) => {
     });
   });
 
-
-  // we must send to face swap api those pictures 
-  // const training = await replicate.trainings.create(
-  //   "stability-ai",
-  //   "sdxl",
-  //   "8beff3369e81422112d93b89ca01426147de542cd4684c244b673b105188fe5f",
-  //   {
-  //     destination: "matthewiversen333/aiviking",
-  //     input: {
-  //       input_images: `https://remwbrfkzindyqlksvyv.supabase.co/storage/v1/object/public/uploads/${emailPrefix}.zip`,
-  //       is_lora: false,
-  //       crop_based_on_salience: false,
-  //       use_face_detection_instead: true,
-  //     },
-  //     webhook: "https://aivking.onrender.com/replicate",
-  //   }
-  // );
-  // console.log(`URL: https://replicate.com/p/${training.id}`);
-  // console.log(training);
-
   // Update the 'training_id' and 'paid' columns
   const { data, error } = await supabase
     .from("users")
@@ -575,7 +555,8 @@ app.post("/stripe", async (req, res) => {
     const userRandom = getRandomNumber(1, imageCount);
 
     const files = fs.readdirSync(emailPrefix);
-    files.forEach(async file => {
+
+    for (const file of files) {
       if (file.startsWith(`${userRandom}`)) {
 
         await new Promise((resolve, reject) => {
@@ -612,9 +593,9 @@ app.post("/stripe", async (req, res) => {
               resolve();
           });
         });
-        return;
+        break;
       }
-    });
+    }
 
     // Download the image using fetch
     // const fetchResponse = await fetch(response[0]);
